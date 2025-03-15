@@ -41,13 +41,11 @@ Contest Tracker provides a centralized platform to monitor competitive programmi
 ├── frontend/
 │   ├── src/
 │   │   ├── layout/      # React components
-│   │   │   ├── adminPanel.jsx
 │   │   │   ├── bookmarks.jsx
 │   │   │   ├── dashboard.jsx
 │   │   │   ├── header.jsx
 │   │   │   ├── layout.jsx
 │   │   │   ├── pastContests.jsx
-│   │   │   ├── settings.jsx
 │   │   │   ├── SiteNavigation.jsx
 │   │   │   └── upcoming.jsx
 │   │   ├── App.jsx      # Main React component
@@ -83,6 +81,10 @@ Contest Tracker provides a centralized platform to monitor competitive programmi
    YT_API_KEY=your_youtube_api_key
    CLIST_USERNAME=your_username
    CLIST_API_KEY=your_api_key
+   YT_API_KEY=your_youtube_api_key
+   LeetcodePlaylist=PLcXpkI9A-RZI6FhydNz3JBt_-p_i25Cbr
+   CodeForcesPlaylist=PLcXpkI9A-RZLUfBSNp-YQBCOezZKbDSgB
+   CodeChefPlaylist=PLcXpkI9A-RZIZ6lsE0KCcLWeKNoG45fYr
    ```
 4. Start the backend server:
    ```
@@ -130,6 +132,7 @@ Customize your experience with options for notifications, appearance, and data p
 - `GET /api/contest/codeforces`: Retrieve Codeforces contests
 - `GET /api/contest/codechef`: Retrieve CodeChef contests
 - `POST /api/contests/leetcode`: Retrieve LeetCode contests with filtering options
+- `POST /api/contestSolution` : Retrieve the Yt Video Links
 
 ### YouTube Integration
 - YouTube playlists for contest solutions 

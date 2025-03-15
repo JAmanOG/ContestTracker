@@ -132,7 +132,7 @@ Customize your experience with options for notifications, appearance, and data p
 - `POST /api/contests/leetcode`: Retrieve LeetCode contests with filtering options
 
 ### YouTube Integration
-- YouTube playlists for contest solutions are configured in the admin panel
+- YouTube playlists for contest solutions 
 
 ## Technologies Used
 

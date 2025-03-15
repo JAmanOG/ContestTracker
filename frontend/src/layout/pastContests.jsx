@@ -100,13 +100,11 @@ const PastContests = ({ contests }) => {
 
     // Process CodeForces finished contests
     if (contests?.codeforces?.contests?.finished) {
-      // Sort codeforces contests by start time (newest first)
       const sortedFinished = [...contests.codeforces?.contests?.finished]
         .sort((a, b) => b.startTimeSeconds - a.startTimeSeconds)
-        .slice(0, 100); // Get only the 100 most recent contests
+        .slice(0, 100);
 
       sortedFinished.forEach((contest) => {
-        // Format duration
         const durationHours = Math.floor(contest.durationSeconds / 3600);
         const durationMinutes = Math.floor(
           (contest.durationSeconds % 3600) / 60
@@ -116,7 +114,6 @@ const PastContests = ({ contests }) => {
             ? `${durationHours} ${durationHours === 1 ? "hour" : "hours"}`
             : `${durationMinutes} minutes`;
 
-        // Format start date
         const startDate = new Date(
           contest.startTimeSeconds * 1000
         ).toLocaleDateString();
@@ -137,7 +134,6 @@ const PastContests = ({ contests }) => {
     // Process LeetCode past contests
     if (contests?.pastleetcode?.objects) {
       contests.pastleetcode.objects.forEach((contest) => {
-        // Format duration in hours
         const durationHours = Math.floor(contest.duration / 3600);
         const durationMinutes = Math.floor((contest.duration % 3600) / 60);
         const duration =

@@ -23,7 +23,7 @@ const Dashboard = ({ contests }) => {
   //   Setup countdown timer
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft({}); // Force re-render to update countdown
+      setTimeLeft({}); 
     }, 1000);
 
     return () => clearInterval(timer);
@@ -34,21 +34,17 @@ const Dashboard = ({ contests }) => {
       // Create a copy of bookmarks
       const updatedBookmarks = { ...bookmarks };
 
-      // Create a unique ID for the contest
       const bookmarkId = `${contest.platform}-${contest.name.replace(
         /\s+/g,
         "-"
       )}`;
 
       if (updatedBookmarks[bookmarkId]) {
-        // Remove bookmark if it exists
         delete updatedBookmarks[bookmarkId];
       } else {
-        // Add bookmark with fixed time format instead of countdown
         const bookmarkedContest = {
           ...contest,
           bookmarkedAt: new Date().toISOString(),
-          // Store actual date instead of countdown
           startTime: contest.startDate,
         };
 
@@ -104,19 +100,16 @@ const Dashboard = ({ contests }) => {
     // Process CodeForces contests
     if (contests?.codeforces?.contests?.upcoming) {
       contests.codeforces?.contests?.upcoming.forEach((contest) => {
-        // Convert seconds to days, hours, minutes, seconds
         const totalSeconds = contest.relativeTimeSeconds * -1;
         const days = Math.floor(totalSeconds / 86400);
         const hours = Math.floor((totalSeconds % 86400) / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
 
-        // Format duration
         const durationHours = Math.floor(contest.durationSeconds / 3600);
         const duration = `${durationHours} ${
           durationHours === 1 ? "hour" : "hours"
         }`;
 
-        // Format start date
         const startDate = new Date(
           contest.startTimeSeconds * 1000
         ).toLocaleDateString();
@@ -137,7 +130,6 @@ const Dashboard = ({ contests }) => {
     // Process LeetCode contests
     if (contests?.leetcode?.objects) {
       contests.leetcode.objects.forEach((contest) => {
-        // Calculate time difference
         const startTime = new Date(contest.start);
         const now = new Date();
         const diff = startTime - now;
@@ -149,7 +141,6 @@ const Dashboard = ({ contests }) => {
           );
           const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-          // Format duration in hours
           const durationHours = contest.duration / 3600;
           const duration = `${durationHours} ${
             durationHours === 1 ? "hour" : "hours"
@@ -207,11 +198,9 @@ const Dashboard = ({ contests }) => {
     // Process CodeForces finished contests
     if (contests?.codeforces?.contests?.finished) {
       console.log(contests.codeforces.contests.finished);
-      // Sort codeforces contests by start time (newest first)
       const sortedFinished = [...contests.codeforces.contests?.finished]
         .sort((a, b) => b.startTimeSeconds - a.startTimeSeconds)
-        .slice(0, 100); // Get only the 100 most recent contests
-
+        .slice(0, 100);
       sortedFinished.forEach((contest) => {
         // Format duration
         const durationHours = Math.floor(contest.durationSeconds / 3600);

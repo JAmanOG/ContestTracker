@@ -2,39 +2,39 @@ import React, { useState, useEffect } from 'react';
 
 const SiteNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  // const [isDarkMode, setIsDarkMode] = useState(false);
 
-  useEffect(() => {
-    // Check if user prefers dark mode
-    const savedDarkMode = localStorage.getItem('darkMode');
-    if (savedDarkMode !== null) {
-      const isDark = savedDarkMode === 'true';
-      setIsDarkMode(isDark);
-      if (isDark) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    }
+  // useEffect(() => {
+  //   // Check if user prefers dark mode
+  //   const savedDarkMode = localStorage.getItem('darkMode');
+  //   if (savedDarkMode !== null) {
+  //     const isDark = savedDarkMode === 'true';
+  //     setIsDarkMode(isDark);
+  //     if (isDark) {
+  //       document.documentElement.classList.add('dark');
+  //     } else {
+  //       document.documentElement.classList.remove('dark');
+  //     }
+  //   }
       
-    // Close mobile menu on wider screens
-    const handleResize = () => {
-      if (window.innerWidth > 1024) {
-        setIsOpen(false);
-      }
-    };
+  //   // Close mobile menu on wider screens
+  //   const handleResize = () => {
+  //     if (window.innerWidth > 1024) {
+  //       setIsOpen(false);
+  //     }
+  //   };
     
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  //   window.addEventListener('resize', handleResize);
+  //   return () => window.removeEventListener('resize', handleResize);
+  // }, []);
 
 
-  const toggleDarkMode = () => {
-    const newMode = !isDarkMode;
-    setIsDarkMode(newMode);
-    localStorage.setItem('darkMode', String(newMode));
-    document.documentElement.classList.toggle('dark');
-  };
+  // const toggleDarkMode = () => {
+  //   const newMode = !isDarkMode;
+  //   setIsDarkMode(newMode);
+  //   localStorage.setItem('darkMode', String(newMode));
+  //   document.documentElement.classList.toggle('dark');
+  // };
   const navItems = [
     { name: 'Upcoming Contests', href: '#upcoming', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" /></svg> },
     { name: 'Past Contests', href: '#past', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" /></svg> },
@@ -153,7 +153,7 @@ const SiteNavigation = () => {
               </ul>
 
               {/* Theme Toggle & User Section */}
-              <div className="mt-auto border-t border-neutral-200/20 dark:border-neutral-700/20 p-4">
+              {/* <div className="mt-auto border-t border-neutral-200/20 dark:border-neutral-700/20 p-4">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-sm font-medium">Dark Mode</span>
                   <button 
@@ -162,7 +162,7 @@ const SiteNavigation = () => {
                   >
                     <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition duration-300 ${isDarkMode ? 'translate-x-6' : 'translate-x-0'}`}></div>
                   </button>
-                </div>
+                </div> */}
                 {/* <div className="flex items-center space-x-3">
                   <div className="flex-shrink-0">
                     <img className="h-10 w-10 rounded-full" src="https://placehold.co/100x100?text=User" alt="User avatar" />

@@ -21,7 +21,7 @@ const Header = () => {
                 clipRule="evenodd"
               />
             </svg>
-            <span className="text-xl font-bold">Contest Tracker</span>
+            <span className="text-xl font-bold">Code Contest Tracker</span>
           </div>
         </div>
 

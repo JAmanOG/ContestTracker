@@ -317,7 +317,7 @@ const Dashboard = ({ contests }) => {
       >
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 space-y-4 md:space-y-0">
           <h1 className="text-2xl font-bold dark:text-white">
-            Contest Tracker
+             Code Contest Tracker
           </h1>
 
           <div className="flex flex-wrap items-center gap-2">

@@ -107,7 +107,7 @@ const SiteNavigation = () => {
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="text-xl font-bold dark:text-white">Contest Tracker</span>
+              <span className="text-xl font-bold dark:text-white">Code ontest Tracker</span>
             </div>
 
             {/* Desktop Navigation Links */}
@@ -239,7 +239,7 @@ const SiteNavigation = () => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="text-xl font-bold">Contest Tracker</span>
+                  <span className="text-xl font-bold">Code Contest Tracker</span>
                 </div>
               </div>
 

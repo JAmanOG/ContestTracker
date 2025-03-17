@@ -733,7 +733,7 @@ const settings = () => {
 
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mt-8">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-              About Contest Tracker
+              About Code Contest Tracker
             </h3>
             <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
               <p>Version: 1.0.0</p>

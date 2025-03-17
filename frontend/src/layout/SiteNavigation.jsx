@@ -2,38 +2,38 @@ import React, { useState, useEffect } from "react";
 
 const SiteNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  // const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // useEffect(() => {
-  //   // Check if user prefers dark mode
-  //   const savedDarkMode = localStorage.getItem('darkMode');
-  //   if (savedDarkMode !== null) {
-  //     const isDark = savedDarkMode === 'true';
-  //     setIsDarkMode(isDark);
-  //     if (isDark) {
-  //       document.documentElement.classList.add('dark');
-  //     } else {
-  //       document.documentElement.classList.remove('dark');
-  //     }
-  //   }
+  useEffect(() => {
+    // Check if user prefers dark mode
+    const savedDarkMode = localStorage.getItem('darkMode');
+    if (savedDarkMode !== null) {
+      const isDark = savedDarkMode === 'true';
+      setIsDarkMode(isDark);
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
 
-  //   // Close mobile menu on wider screens
-  //   const handleResize = () => {
-  //     if (window.innerWidth > 1024) {
-  //       setIsOpen(false);
-  //     }
-  //   };
+    // Close mobile menu on wider screens
+    const handleResize = () => {
+      if (window.innerWidth > 1024) {
+        setIsOpen(false);
+      }
+    };
 
-  //   window.addEventListener('resize', handleResize);
-  //   return () => window.removeEventListener('resize', handleResize);
-  // }, []);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  // const toggleDarkMode = () => {
-  //   const newMode = !isDarkMode;
-  //   setIsDarkMode(newMode);
-  //   localStorage.setItem('darkMode', String(newMode));
-  //   document.documentElement.classList.toggle('dark');
-  // };
+  const toggleDarkMode = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    localStorage.setItem('darkMode', String(newMode));
+    document.documentElement.classList.toggle('dark');
+  };
   const navItems = [
     {
       name: "Upcoming Contests",
@@ -107,7 +107,7 @@ const SiteNavigation = () => {
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="text-xl font-bold">Contest Tracker</span>
+              <span className="text-xl font-bold dark:text-white">Contest Tracker</span>
             </div>
 
             {/* Desktop Navigation Links */}
@@ -125,7 +125,7 @@ const SiteNavigation = () => {
             </div>
 
             {/* User & Theme Controls */}
-            {/* <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4">
               <button
                 onClick={toggleDarkMode}
                 className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-700"
@@ -161,13 +161,8 @@ const SiteNavigation = () => {
                     />
                   </svg>
                 )}
-              </button> */}
-
-              {/* <div className="flex items-center space-x-2">
-                <img className="h-8 w-8 rounded-full" src="https://placehold.co/100x100?text=User" alt="User avatar" />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-200">John Doe</span>
-              </div> */}
-            {/* </div> */}
+              </button>
+            </div>
           </div>
         </div>
       </nav>

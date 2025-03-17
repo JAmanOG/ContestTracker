@@ -157,7 +157,7 @@ const Layout = () => {
     <>
       <SiteNavigation />
       <div className="flex">
-        <div className="flex-1 p-4">
+        <div className="flex-1 p-4 dark:bg-black">
           <div className="flex justify-between items-center mb-4 sticky top-0 bg-white dark:bg-neutral-900 md:mt-14 p-2 z-10 shadow-sm">
             {lastFetched && (
               <span className="text-sm text-gray-500 dark:text-gray-400">

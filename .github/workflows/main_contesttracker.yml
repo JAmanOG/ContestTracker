@@ -64,5 +64,5 @@ jobs:
         with:
           app-name: 'contesttracker'
           slot-name: 'Production'
-          package: .
+          package: ./backend
           

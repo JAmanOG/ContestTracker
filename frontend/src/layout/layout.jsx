@@ -156,85 +156,94 @@ const Layout = () => {
   return (
     <>
       <SiteNavigation />
-      <div className="flex">
-        <div className="flex-1 p-4 dark:bg-black">
-          <div className="flex justify-between items-center mb-4 sticky top-0 bg-white dark:bg-neutral-900 md:mt-14 p-2 z-10 shadow-sm">
-            {lastFetched && (
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                Last updated: {lastFetched}
-              </span>
-            )}
-            <button
-              onClick={() => fetchContests(true)}
-              disabled={isLoading}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 font-medium flex items-center gap-2 transition-all  shadow-sm"
-            >
-              {isLoading ? (
-                <>
-                  <svg
-                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Refreshing...
-                </>
-              ) : (
-                <>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
+      <div className="flex-1 p-4 dark:bg-black">
+        <div
+          className="flex justify-between items-center mb-2 md:mb-4 sticky top-0 z-10 
+     bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm md:bg-white md:dark:bg-neutral-900
+     py-1.5 px-2 md:py-2 md:px-3 md:mt-14 shadow-sm"
+        >
+          {lastFetched && (
+            <span className="text-xs md:text-sm text-gray-500 dark:text-gray-400 truncate max-w-[60%] md:max-w-none">
+              Last: {lastFetched.split(",")[1] || lastFetched}
+              <span className="hidden md:inline">{`, ${
+                lastFetched.split(",")[0] || ""
+              }`}</span>
+            </span>
+          )}
+          <button
+            onClick={() => fetchContests(true)}
+            disabled={isLoading}
+            className="px-2 py-1 md:px-4 md:py-2 bg-blue-500/90 md:bg-blue-500 text-white text-xs md:text-sm 
+             rounded-md hover:bg-blue-600 disabled:opacity-50 font-normal flex items-center gap-1 md:gap-2 
+             transition-all h-min shadow-sm"
+          >
+            {isLoading ? (
+              <>
+                <svg
+                  className="animate-spin h-3 w-3 md:h-4 md:w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
                     stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                    />
-                  </svg>
-                  Refresh Data
-                </>
-              )}
-            </button>
-          </div>
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-              {error}
-            </div>
-          )}
-
-          {isLoading && !lastFetched ? (
-            <div className="flex justify-center items-center h-32">
-              <p className="text-gray-500">Loading contests data...</p>
-            </div>
-          ) : (
-            <>
-              <Dashboard contests={contests} />
-              <Upcoming contests={contests} />
-              <PastContests contests={contests} />
-              <Bookmarks contests={contests} />
-              {/* <AdminPanel />
-              <Settings /> */}
-            </>
-          )}
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                <span className="hidden md:inline">Refreshing...</span>
+                <span className="inline md:hidden">Loading...</span>
+              </>
+            ) : (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3 w-3 md:h-5 md:w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+                <span className="hidden md:inline">Refresh Data</span>
+                <span className="inline md:hidden">Refresh</span>
+              </>
+            )}
+          </button>
         </div>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
+
+        {isLoading && !lastFetched ? (
+          <div className="flex justify-center items-center h-32">
+            <p className="text-gray-500">Loading contests data...</p>
+          </div>
+        ) : (
+          <>
+            <Dashboard contests={contests} />
+            <Upcoming contests={contests} />
+            <PastContests contests={contests} />
+            <Bookmarks contests={contests} />
+            {/* <AdminPanel />
+              <Settings /> */}
+          </>
+        )}
       </div>
     </>
   );

@@ -239,7 +239,7 @@ const SiteNavigation = () => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="text-xl font-bold">Code Contest Tracker</span>
+                  <span className="text-xl font-bold dark:text-white">Code Contest Tracker</span>
                 </div>
               </div>
 
@@ -264,9 +264,9 @@ const SiteNavigation = () => {
               </ul>
 
               {/* Theme Toggle & User Section */}
-              {/* <div className="mt-auto border-t border-neutral-200/20 dark:border-neutral-700/20 p-4">
+              <div className="mt-auto border-t border-neutral-200/20 dark:border-neutral-700/20 p-4">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-medium">Dark Mode</span>
+                  <span className="text-sm font-medium dark:text-white">Dark Mode</span>
                   <button
                     onClick={toggleDarkMode}
                     className="w-12 h-6 rounded-full bg-gray-200 dark:bg-neutral-700 flex items-center transition duration-300 focus:outline-none shadow"
@@ -278,7 +278,7 @@ const SiteNavigation = () => {
                     ></div>
                   </button>
                 </div>
-                <div className="flex items-center space-x-3">
+                {/* <div className="flex items-center space-x-3">
                   <div className="flex-shrink-0">
                     <img className="h-10 w-10 rounded-full" src="https://placehold.co/100x100?text=User" alt="User avatar" />
                   </div>
@@ -286,8 +286,8 @@ const SiteNavigation = () => {
                     <p className="text-sm font-medium truncate">John Doe</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 truncate">john@example.com</p>
                   </div>
-                </div>
-              </div> */}
+                </div> */}
+              </div>
             </div>
           </div>
         )}

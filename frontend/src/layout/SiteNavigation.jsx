@@ -167,7 +167,7 @@ const SiteNavigation = () => {
                 <img className="h-8 w-8 rounded-full" src="https://placehold.co/100x100?text=User" alt="User avatar" />
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-200">John Doe</span>
               </div> */}
-            </div>
+            {/* </div> */}
           </div>
         </div>
       </nav>

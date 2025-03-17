@@ -71,9 +71,9 @@ const Layout = () => {
     
     try {
       // Fetch data from all APIs
-      const codechefRes = await fetch("http://localhost:5000/api/contest/codechef");
-      const codeforceRes = await fetch("http://localhost:5000/api/contest/codeforces");
-      const leetcodeRes = await fetch("http://localhost:5000/api/contests/leetcode", {
+      const codechefRes = await fetch(`${import.meta.env.VITE_URl}/api/contest/codechef`);
+      const codeforceRes = await fetch(`${import.meta.env.VITE_URl}/api/contest/codeforces`);
+      const leetcodeRes = await fetch(`${import.meta.env.VITE_URl}/api/contests/leetcode`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -86,7 +86,7 @@ const Layout = () => {
           }
         }),
       });
-      const pastleetcodeRes = await fetch("http://localhost:5000/api/contests/leetcode", {
+      const pastleetcodeRes = await fetch("import.meta.env.VITE_URl/api/contests/leetcode", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

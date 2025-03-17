@@ -16,7 +16,7 @@ const PastContests = ({ contests }) => {
       setLoadingSolution(contestId);
   
       const response = await fetch(
-        `http://localhost:5000/api/contestSolution`,
+        `${import.meta.env.VITE_URl}/api/contestSolution`,
         {
           method: "POST",
           headers: {

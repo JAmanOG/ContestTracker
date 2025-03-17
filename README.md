@@ -1,6 +1,7 @@
 
 Contest Tracker is a web application that helps competitive programmers track upcoming and past coding contests from platforms like Codeforces, CodeChef, and LeetCode.
 
+## Website: https://codecontesttracker.vercel.app
 ## Video link: https://drive.google.com/file/d/1ueMRx28rf28EHm0zoo3JFcab2oOc6L7c/view?usp=sharing
 
 ## Table of Contents
@@ -17,12 +18,19 @@ Contest Tracker is a web application that helps competitive programmers track up
 
 Contest Tracker provides a centralized platform to monitor competitive programming contests across multiple platforms. It features a clean, responsive interface with dark mode support, detailed contest listings, and personalized bookmarking functionality.
 
+## Storage
+The application uses localStorage for two key purposes:
+
+1. **API Data Caching**: Contest data is cached in localStorage and automatically refreshed every hour to minimize API calls. Users can manually update the data by clicking the Refresh button.
+
+2. **Bookmarks**: User bookmarks are stored in localStorage for immediate access across browser sessions. This provides a seamless experience when users return to the application.
+
 ## Features
 
 - **Multi-platform Contest Tracking**: Monitor contests from Codeforces, CodeChef, and LeetCode
 - **Upcoming Contests**: View all upcoming contests with countdown timers
 - **Past Contests**: Access historical contest data
-- **Bookmarking System**: Save favorite contests for quick access
+- **Bookmarking System**: Save favorite contests for quick access in local storage
 - **Platform Filtering**: Filter contests by programming platform
 - **Contest Details**: View contest duration, start time, and participant count
 - **YouTube Solution Integration**: Access video solutions for past contests
@@ -147,11 +155,11 @@ Customize your experience with options for notifications, appearance, and data p
 - **Backend**:
   - Node.js
   - Express
-  - Puppeteer (for web scraping)
+  - Puppeteer (for web scraping) -- switch to Clist api for the deployment but code still exist you can refer that way of doing to
 
 - **APIs**:
   - Codeforces API
   - YouTube Data API
-  - CLIST API (for LeetCode)
+  - CLIST API 
 
 This documentation provides a comprehensive overview of the Contest Tracker project. For more specific questions or troubleshooting, please refer to the code or raise an issue in the repository.

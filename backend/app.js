@@ -169,6 +169,11 @@ app.post("/api/contestSolution", async (req, res) => {
     console.log("Codeforces Playlist");
     // Codeforces Round 1009 (Div. 3) removing the '.'
     query = searchQuery.replace(/\./g, "");
+    if(query.startsWith("Educational")) {
+      query = query.replace(/\([^)]*\)/g, "").trim();
+      console.log("Educational round detected, modified query:", query);
+  }
+
     playlistId = process.env.CodeForcesPlaylist
   } else if(platform === "codechef"){
     playlistId = process.env.CodeChefPlaylist

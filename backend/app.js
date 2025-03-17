@@ -80,41 +80,42 @@ app.get("/api/contest/:platform", async (req, res) => {
   }
 });
 
-app.post("/api/contests/codeChef", async (req, res) => {
-  console.log("CodeChef Contest Request Received");
-  const { query = {} } = req.body;
-  console.log("Query:", query);
+// app.post("/api/contests/codeChef", async (req, res) => {
+//   console.log("CodeChef Contest Request Received");
+//   const { query = {} } = req.body;
+//   console.log("Query:", query);
 
-  const username = process.env.CLIST_USERNAME;
-  const api_key = process.env.CLIST_API_KEY;
+//   const username = process.env.CLIST_USERNAME;
+//   const api_key = process.env.CLIST_API_KEY;
 
-  if (!username || !api_key) {
-    return res.status(400).json({ error: "Username or API key not found" });
-  }
+//   if (!username || !api_key) {
+//     return res.status(400).json({ error: "Username or API key not found" });
+//   }
 
-  try {
-    const response = await axios.get(`https://clist.by/api/v4/contest/`, {
-      params: {
-        username,
-        api_key,
-        upcoming: query.upcoming || "true",
-        host: "codechef.com",
-        order_by: query.order_by || "start",
-        limit: query.limit || 5,
-        start__gte: query?.start__gte || "",
-        end__lte: query?.end__lte || "",
-      },
-      headers: {
-        Accept: "application/json", // Request JSON response
-      },
-    });
+//   try {
+//     const response = await axios.get(`https://clist.by/api/v4/contest/`, {
+//       params: {
+//         username,
+//         api_key,
+//         upcoming: query.upcoming || "true",
+//         host: "codechef.com",
+//         order_by: query.order_by || "start",
+//         limit: query.limit || 5,
+//         start__gte: query?.start__gte || "",
+//         end__lte: query?.end__lte || "",
+//       },
+//       headers: {
+//         Accept: "application/json", // Request JSON response
+//       },
+//     });
+//     console.log("codechef response")
 
-    res.json(response.data); // Send JSON response
-  } catch (error) {
-    console.error("Error fetching contests:", error.message);
-    res.status(500).json({ error: "An error occurred while fetching contests." });
-  }
-});
+//     res.json(response.data); // Send JSON response
+//   } catch (error) {
+//     console.error("Error fetching contests:", error.message);
+//     res.status(500).json({ error: "An error occurred while fetching contests." });
+//   }
+// });
 
 
 app.post("/api/contests/leetcode", async (req, res) => {
@@ -138,7 +139,7 @@ app.post("/api/contests/leetcode", async (req, res) => {
         upcoming: query.upcoming || "true",
         host: "leetcode.com",
         order_by: query.order_by || "start",
-        limit: query.limit || 5,
+        // limit: query.limit || 5,
         start__gte: query?.start__gte || "",
         end__lte: query?.end__lte || "",
       },

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { format } from "date-fns";
 
 const Upcoming = ({ contests }) => {
   const [filteredPlatform, setFilteredPlatform] = useState("all");
@@ -6,9 +7,10 @@ const Upcoming = ({ contests }) => {
   const [sortBy, setSortBy] = useState("date");
   const [timeLeft, setTimeLeft] = useState({});
   const [bookmarks, setBookmarks] = useState({});
+  const itemsPerPage = 12; // Adjust based on your preference
 
-//   console.log("Contests", contests);
-useEffect(() => {
+  //   console.log("Contests", contests);
+  useEffect(() => {
     try {
       const savedBookmarks = localStorage.getItem("contestBookmarks");
       if (savedBookmarks) {
@@ -19,14 +21,44 @@ useEffect(() => {
     }
   }, []);
 
+  const calculateTimeRemaining = (startDate) => {
+    const now = new Date();
+    const contestTime = new Date(startDate);
+    const diff = contestTime - now;
+
+    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    return { days, hours, minutes, seconds };
+  };
+
+  // Add this helper function
+  const formatDuration = (durationInSeconds) => {
+    const hours = Math.floor(durationInSeconds / 3600);
+    const minutes = Math.floor((durationInSeconds % 3600) / 60);
+
+    if (hours > 0) {
+      return `${hours} ${hours === 1 ? "hour" : "hours"}`;
+    } else {
+      return `${minutes} ${minutes === 1 ? "minute" : "minutes"}`;
+    }
+  };
+
   const toggleBookmark = (contest) => {
     try {
       // Create a copy of bookmarks
       const updatedBookmarks = { ...bookmarks };
-      
+
       // Create a unique ID for the contest
-      const bookmarkId = `${contest.platform}-${contest.name.replace(/\s+/g, '-')}`;
-      
+      const bookmarkId = `${contest.platform}-${contest.name.replace(
+        /\s+/g,
+        "-"
+      )}`;
+
       if (updatedBookmarks[bookmarkId]) {
         // Remove bookmark if it exists
         delete updatedBookmarks[bookmarkId];
@@ -36,16 +68,18 @@ useEffect(() => {
           ...contest,
           bookmarkedAt: new Date().toISOString(),
           // Store actual date instead of countdown
-          startTime: contest.startDate
+          startTime: contest.startDate,
         };
-        
+
         updatedBookmarks[bookmarkId] = bookmarkedContest;
       }
-      
+
       // Save to state and localStorage
       setBookmarks(updatedBookmarks);
-      localStorage.setItem("contestBookmarks", JSON.stringify(updatedBookmarks));
-      
+      localStorage.setItem(
+        "contestBookmarks",
+        JSON.stringify(updatedBookmarks)
+      );
     } catch (error) {
       console.error("Error toggling bookmark:", error);
     }
@@ -53,11 +87,12 @@ useEffect(() => {
 
   // Check if a contest is bookmarked
   const isBookmarked = (contest) => {
-    const bookmarkId = `${contest.platform}-${contest.name.replace(/\s+/g, '-')}`;
+    const bookmarkId = `${contest.platform}-${contest.name.replace(
+      /\s+/g,
+      "-"
+    )}`;
     return !!bookmarks[bookmarkId];
   };
-
-
 
   // Parse and format contests data
   const parseContests = () => {
@@ -66,22 +101,22 @@ useEffect(() => {
     // Process CodeChef contests
     if (contests?.codechef?.upcoming) {
       contests.codechef.upcoming?.forEach((contest) => {
+        // Convert duration from seconds to readable format
+        const formattedDuration = formatDuration(contest.duration);
+
+        // Calculate time remaining dynamically
+        const timeRemaining = calculateTimeRemaining(contest.start);
+
         allContests.push({
           platform: "codechef",
           name: contest.name,
           startDate: contest.start,
-          duration: contest.duration,
-          startsIn: {
-            days: parseInt(contest.startsInDays?.split(" ")[0]) || 0,
-            hours: parseInt(contest.startsInHours?.split(" ")[0]) || 0,
-            minutes: 0,
-            seconds: 0,
-          },
+          duration: formattedDuration,
+          startsIn: timeRemaining, // Dynamic calculation instead of parsing strings
           url: `https://www.codechef.com/contests/${contest.code}`,
         });
       });
     }
-
     // Process CodeForces contests
     if (contests?.codeforces?.contests?.upcoming) {
       contests.codeforces.contests.upcoming.forEach((contest) => {
@@ -125,7 +160,7 @@ useEffect(() => {
 
     // Process LeetCode contests
     if (contests?.leetcode?.objects) {
-        contests.leetcode.objects.forEach((contest) => {
+      contests.leetcode.objects.forEach((contest) => {
         // Calculate time difference
         const startTime = new Date(contest.start);
         const now = new Date();
@@ -243,11 +278,21 @@ useEffect(() => {
 
   // Get all contests after applying filters and sorting
   const allContests = parseContests();
+  const totalPages = Math.ceil(allContests.length / itemsPerPage);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Then update how you display contests
+  const indexOfLastContest = currentPage * itemsPerPage;
+  const indexOfFirstContest = indexOfLastContest - itemsPerPage;
+  const currentContests = allContests.slice(
+    indexOfFirstContest,
+    indexOfLastContest
+  );
 
   return (
     <>
       <div
-        id="upcoming" 
+        id="upcoming"
         className="page-section bg-gray-50 dark:bg-gray-900 py-8 min-h-screen"
       >
         <div className="container mx-auto px-4">
@@ -259,7 +304,6 @@ useEffect(() => {
               Stay updated with all upcoming competitive programming contests.
             </p>
           </div>
-
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
               <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
@@ -358,7 +402,6 @@ useEffect(() => {
               </select>
             </div>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {allContests.length === 0 ? (
               <div className="col-span-3 text-center py-8">
@@ -367,7 +410,7 @@ useEffect(() => {
                 </p>
               </div>
             ) : (
-              allContests.map((contest, index) => (
+              currentContests.map((contest, index) => (
                 <div
                   key={index}
                   className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow"
@@ -384,28 +427,34 @@ useEffect(() => {
                       <h3 className="text-xl font-bold text-gray-800 dark:text-white">
                         {contest.name}
                       </h3>
-                      <button 
-                      className={`transition-colors ${isBookmarked(contest) 
-                        ? "text-yellow-500 dark:text-yellow-400" 
-                        : "text-gray-400 hover:text-yellow-500 dark:hover:text-yellow-400"}`}
-                      onClick={() => toggleBookmark(contest)}
-                      aria-label={isBookmarked(contest) ? "Remove bookmark" : "Add bookmark"}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
-                        fill={isBookmarked(contest) ? "currentColor" : "none"}
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                      <button
+                        className={`transition-colors ${
+                          isBookmarked(contest)
+                            ? "text-yellow-500 dark:text-yellow-400"
+                            : "text-gray-400 hover:text-yellow-500 dark:hover:text-yellow-400"
+                        }`}
+                        onClick={() => toggleBookmark(contest)}
+                        aria-label={
+                          isBookmarked(contest)
+                            ? "Remove bookmark"
+                            : "Add bookmark"
+                        }
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                        />
-                      </svg>
-                    </button>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill={isBookmarked(contest) ? "currentColor" : "none"}
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                          />
+                        </svg>
+                      </button>
                     </div>
                     <div className="mb-4">
                       <div className="flex items-center text-sm text-gray-600 dark:text-gray-300 mb-2">
@@ -423,7 +472,7 @@ useEffect(() => {
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                           />
                         </svg>
-                        {contest.startDate}
+                        {format(new Date(contest.startDate), "PPpp")}
                       </div>
                       <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
                         <svg
@@ -440,6 +489,7 @@ useEffect(() => {
                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                           />
                         </svg>
+                        {/* Duration: {contest.duration} */}
                         Duration: {contest.duration}
                       </div>
                     </div>
@@ -495,37 +545,57 @@ useEffect(() => {
               ))
             )}
           </div>
-
-          {allContests.length > 6 && (
-            <div className="mt-8 flex justify-center">
+          {allContests.length > itemsPerPage && (
+            <div className="mt-6 flex justify-center">
               <nav className="flex items-center space-x-2">
-                <a
-                  href="#"
-                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className={`px-3 py-2 rounded-md text-sm font-medium ${
+                    currentPage === 1
+                      ? "text-gray-400 dark:text-gray-600"
+                      : "text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
                 >
                   Previous
-                </a>
-                <a
-                  href="#"
-                  className="px-3 py-2 rounded-md text-sm font-medium bg-indigo-600 text-white"
-                >
-                  1
-                </a>
-                <a
-                  href="#"
-                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
-                >
-                  2
-                </a>
-                <a
-                  href="#"
-                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
+                </button>
+
+                {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                  const pageNum = i + 1 + Math.max(0, currentPage - 3);
+                  if (pageNum <= totalPages) {
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={`px-3 py-2 rounded-md text-sm font-medium ${
+                          currentPage === pageNum
+                            ? "bg-indigo-600 text-white"
+                            : "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  }
+                  return null;
+                })}
+
+                <button
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                  className={`px-3 py-2 rounded-md text-sm font-medium ${
+                    currentPage === totalPages
+                      ? "text-gray-400 dark:text-gray-600"
+                      : "text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
                 >
                   Next
-                </a>
+                </button>
               </nav>
             </div>
-          )}
+          )}{" "}
         </div>
       </div>
     </>

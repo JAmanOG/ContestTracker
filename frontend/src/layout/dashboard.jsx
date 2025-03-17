@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { format } from 'date-fns';
 
 const Dashboard = ({ contests }) => {
   const [activeTab, setActiveTab] = useState("upcoming");
@@ -23,7 +24,7 @@ const Dashboard = ({ contests }) => {
   //   Setup countdown timer
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft({}); 
+      setTimeLeft({});
     }, 1000);
 
     return () => clearInterval(timer);
@@ -70,26 +71,44 @@ const Dashboard = ({ contests }) => {
     return !!bookmarks[bookmarkId];
   };
 
+  function calculateTimeRemaining(startTime) {
+    const now = new Date();
+    const diff = startTime - now;
+
+    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+    return { days, hours, minutes, seconds: 0 };
+  }
   // Get upcoming contests for dashboard display (show top 3)
   const getUpcomingContests = () => {
     const allContests = [];
+
+    
 
     // Process CodeChef contests
     if (contests?.codechef?.upcoming) {
       console.log(contests.codechef.upcoming);
       contests.codechef.upcoming.forEach((contest) => {
+        // Convert ISO string to consistent format
+        const startTime = new Date(contest.start);
+        const durationHours = Math.floor(contest.duration / 3600);
+        const duration = `${durationHours} ${
+          durationHours === 1 ? "hour" : "hours"
+        }`;
+
+
         allContests.push({
           platform: "codechef",
           name: contest.name,
           code: contest.code,
-          startDate: contest.start,
-          duration: contest.duration,
-          startsIn: {
-            days: parseInt(contest.startsInDays?.split(" ")[0]) || 0,
-            hours: parseInt(contest.startsInHours?.split(" ")[0]) || 0,
-            minutes: 0,
-            seconds: 0,
-          },
+          startDate: contest.start, // Keep original for API compatibility
+          displayDate: startTime.toLocaleDateString(), // For display consistency
+          duration: duration,
+          startsIn: calculateTimeRemaining(startTime),
           url: `https://www.codechef.com/contests/${contest.code}`,
           color: "bg-green-500",
         });
@@ -100,27 +119,22 @@ const Dashboard = ({ contests }) => {
     // Process CodeForces contests
     if (contests?.codeforces?.contests?.upcoming) {
       contests.codeforces?.contests?.upcoming.forEach((contest) => {
-        const totalSeconds = contest.relativeTimeSeconds * -1;
-        const days = Math.floor(totalSeconds / 86400);
-        const hours = Math.floor((totalSeconds % 86400) / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        // Convert timestamp to consistent format
+        const startTime = new Date(contest.startTimeSeconds * 1000);
 
         const durationHours = Math.floor(contest.durationSeconds / 3600);
         const duration = `${durationHours} ${
           durationHours === 1 ? "hour" : "hours"
         }`;
 
-        const startDate = new Date(
-          contest.startTimeSeconds * 1000
-        ).toLocaleDateString();
-
         allContests.push({
           platform: "codeforces",
           name: contest.name,
           type: contest.type,
-          startDate: startDate,
+          startDate: startTime.toISOString(), // Store as ISO string for internal use
+          displayDate: startTime.toLocaleDateString(), // For display consistency
           duration: duration,
-          startsIn: { days, hours, minutes, seconds: 0 },
+          startsIn: calculateTimeRemaining(startTime),
           url: `https://codeforces.com/contests/${contest.id}`,
           color: "bg-red-500",
         });
@@ -130,17 +144,12 @@ const Dashboard = ({ contests }) => {
     // Process LeetCode contests
     if (contests?.leetcode?.objects) {
       contests.leetcode.objects.forEach((contest) => {
+        // Convert to standard format
         const startTime = new Date(contest.start);
         const now = new Date();
         const diff = startTime - now;
 
         if (diff > 0) {
-          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-          const hours = Math.floor(
-            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-          );
-          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
           const durationHours = contest.duration / 3600;
           const duration = `${durationHours} ${
             durationHours === 1 ? "hour" : "hours"
@@ -149,9 +158,10 @@ const Dashboard = ({ contests }) => {
           allContests.push({
             platform: "leetcode",
             name: contest.event,
-            startDate: new Date(contest.start).toLocaleDateString(),
+            startDate: startTime.toISOString(), // Store as ISO string for internal use
+            displayDate: startTime.toLocaleDateString(), // For display consistency
             duration: duration,
-            startsIn: { days, hours, minutes, seconds: 0 },
+            startsIn: calculateTimeRemaining(startTime), // Use the helper function
             url: contest.href,
             color: "bg-yellow-500",
           });
@@ -182,13 +192,16 @@ const Dashboard = ({ contests }) => {
     // Process CodeChef past contests
     if (contests?.codechef?.past) {
       contests.codechef.past.forEach((contest) => {
+        const startTime = new Date(contest.start);
+
         allPastContests.push({
           platform: "codechef",
           name: contest.name,
           code: contest.code,
-          startDate: contest.start,
+          startDate: contest.start, // Original ISO format
+          displayDate: startTime.toLocaleDateString(), // For consistent display
           duration: contest.duration,
-          participants: contest.Participants,
+          participants: contest.Participants || "N/A",
           url: `https://www.codechef.com/${contest.code}`,
           color: "bg-green-500",
         });
@@ -197,11 +210,13 @@ const Dashboard = ({ contests }) => {
 
     // Process CodeForces finished contests
     if (contests?.codeforces?.contests?.finished) {
-      console.log(contests.codeforces.contests.finished);
       const sortedFinished = [...contests.codeforces.contests?.finished]
         .sort((a, b) => b.startTimeSeconds - a.startTimeSeconds)
         .slice(0, 100);
+
       sortedFinished.forEach((contest) => {
+        const startTime = new Date(contest.startTimeSeconds * 1000);
+
         // Format duration
         const durationHours = Math.floor(contest.durationSeconds / 3600);
         const durationMinutes = Math.floor(
@@ -212,18 +227,15 @@ const Dashboard = ({ contests }) => {
             ? `${durationHours} ${durationHours === 1 ? "hour" : "hours"}`
             : `${durationMinutes} minutes`;
 
-        // Format start date
-        const startDate = new Date(
-          contest.startTimeSeconds * 1000
-        ).toLocaleDateString();
-
         allPastContests.push({
           platform: "codeforces",
           name: contest.name,
           id: contest.id,
           type: contest.type,
-          startDate: startDate,
+          startDate: startTime.toISOString(), // ISO format for consistency
+          displayDate: startTime.toLocaleDateString(), // For display
           duration: duration,
+          participants: contest.participants || "N/A", // Add if available
           url: `https://codeforces.com/contest/${contest.id}`,
           color: "bg-red-500",
         });
@@ -233,6 +245,8 @@ const Dashboard = ({ contests }) => {
     // Process LeetCode past contests
     if (contests?.pastleetcode?.objects) {
       contests.pastleetcode.objects.forEach((contest) => {
+        const startTime = new Date(contest.start);
+
         // Format duration in hours
         const durationHours = Math.floor(contest.duration / 3600);
         const durationMinutes = Math.floor((contest.duration % 3600) / 60);
@@ -244,17 +258,16 @@ const Dashboard = ({ contests }) => {
         allPastContests.push({
           platform: "leetcode",
           name: contest.event,
-          startDate: new Date(contest.start).toLocaleDateString(),
-          endDate: new Date(contest.end).toLocaleDateString(),
+          startDate: startTime.toISOString(), // Store as ISO string
+          displayDate: startTime.toLocaleDateString(), // For display consistency
           duration: duration,
-          problemCount: contest.n_problems,
-          participants: contest.n_statistics,
+          problemCount: contest.n_problems || "N/A",
+          participants: contest.n_statistics || "N/A",
           url: contest.href,
           color: "bg-yellow-500",
         });
       });
     }
-
     // Sort contests by start date (most recent first)
     allPastContests.sort((a, b) => {
       return new Date(b.startDate) - new Date(a.startDate);
@@ -455,7 +468,8 @@ const Dashboard = ({ contests }) => {
                           />
                         </svg>
                         <span className="text-gray-700 dark:text-gray-300">
-                          {contest.startDate}
+                          {/* {contest.displayDate} */}
+                          {format(new Date(contest.startDate), 'PPpp')}
                         </span>
                       </div>
                     </div>
@@ -517,7 +531,7 @@ const Dashboard = ({ contests }) => {
               </div>
             )}
 
-            {upcomingContests.length > 0 && filteredPlatform === "all" && (
+            {/* {upcomingContests.length > 0 && filteredPlatform === "all" && (
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-100 dark:border-blue-900/30 p-4">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                   <div className="mb-4 md:mb-0">
@@ -542,7 +556,7 @@ const Dashboard = ({ contests }) => {
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6">
@@ -611,7 +625,7 @@ const Dashboard = ({ contests }) => {
                         />
                       </svg>
                       <span className="text-gray-700 dark:text-gray-300">
-                        {contest.startDate}
+                        {format(new Date(contest.startDate), 'PPpp')}
                       </span>
                     </div>
                     <div className="flex items-center">
@@ -627,9 +641,23 @@ const Dashboard = ({ contests }) => {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="text-gray-700 dark:text-gray-300">
-                        {contest.duration}
-                      </span>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 text-gray-500 dark:text-gray-400 mr-1"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <span className="text-gray-700 dark:text-gray-300">
+                          {contest.duration}
+                        </span>
+                      </div>{" "}
                     </div>
                   </div>
 
@@ -648,6 +676,16 @@ const Dashboard = ({ contests }) => {
                             } px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded dark:bg-yellow-900 dark:text-yellow-300`}
                           >
                             {contest.problemCount} problems
+                          </span>
+                        )}
+                        {contest.platform === "codechef" &&
+                        contest.code && (
+                          <span
+                            className={`${
+                              contest.type ? "ml-2" : ""
+                            } px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded dark:bg-green-900 dark:text-green-300`}
+                          >
+                            {contest.code} Code
                           </span>
                         )}
                     </div>

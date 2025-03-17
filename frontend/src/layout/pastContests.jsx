@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { format } from "date-fns";
 
 const PastContests = ({ contests }) => {
   const [filteredPlatform, setFilteredPlatform] = useState("all");
@@ -14,7 +15,7 @@ const PastContests = ({ contests }) => {
     try {
       // Set loading state for the specific contest
       setLoadingSolution(contestId);
-  
+
       const response = await fetch(
         `${import.meta.env.VITE_URl}/api/contestSolution`,
         {
@@ -25,10 +26,10 @@ const PastContests = ({ contests }) => {
           body: JSON.stringify({ platform, searchQuery: contestName }),
         }
       );
-  
+
       const data = await response.json();
       console.log("Solution data:", data);
-  
+
       // Fix: Handle both array and direct object responses
       if (data) {
         // If data is an array
@@ -37,18 +38,18 @@ const PastContests = ({ contests }) => {
             ...prev,
             [contestId]: data[0],
           }));
-          
+
           if (data[0].url) {
             window.open(data[0].url, "_blank");
           }
-        } 
+        }
         // If data is a direct object with url
         else if (data.url) {
           setSolutions((prev) => ({
             ...prev,
             [contestId]: data,
           }));
-          
+
           window.open(data.url, "_blank");
         }
         // No valid solution found
@@ -85,16 +86,26 @@ const PastContests = ({ contests }) => {
     // Process CodeChef past contests
     if (contests?.codechef?.past) {
       contests.codechef.past.forEach((contest) => {
-        allPastContests.push({
-          platform: "codechef",
-          name: contest.name,
-          code: contest.code,
-          startDate: contest.start,
-          duration: contest.duration,
-          participants: contest.Participants,
-          url: `https://www.codechef.com/${contest.code}`,
-          color: "bg-green-500",
-        });
+      const durationHours = Math.floor(contest.duration / 3600);
+      const durationMinutes = Math.floor((contest.duration % 3600) / 60);
+
+      const duration =
+        durationHours > 0
+        ? `${durationHours} ${durationHours === 1 ? "hour" : "hours"}`
+        : `${durationMinutes} minutes`;
+
+      const startDate = new Date(contest.start).toLocaleDateString();
+
+      allPastContests.push({
+        platform: "codechef",
+        name: contest.name,
+        code: contest.code,
+        startDate: startDate,
+        duration: duration,
+        participants: contest.Participants,
+        url: `https://www.codechef.com/${contest.code}`,
+        color: "bg-green-500",
+      });
       });
     }
 
@@ -465,7 +476,6 @@ const PastContests = ({ contests }) => {
                         solutions[
                           contest.id || `${contest.platform}-${contest.name}`
                         ].url ? (
-                            
                           <a
                             href={
                               solutions[

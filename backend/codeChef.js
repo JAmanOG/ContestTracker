@@ -134,7 +134,6 @@
 //   await browser.close();
 //   return contests;
 // }
-
 import axios from "axios";
 
 export async function codeChef() {
@@ -145,22 +144,44 @@ export async function codeChef() {
     throw new Error("Username or API key not found");
   }
 
-  const response = await axios.get(`https://clist.by/api/v4/contest/`, {
+  // Fetch upcoming contests
+  const upcomingResponse = await axios.get(`https://clist.by/api/v4/contest/`, {
     params: {
       username,
       api_key,
       host: "codechef.com",
       order_by: "start",
-      limit: 10,
+      // limit: 10,
+      upcoming: true,
     },
     headers: {
       Accept: "application/json",
     },
   });
+  const today = new Date();
+  const threeYearsAgo = new Date(today);
+  threeYearsAgo.setFullYear(today.getFullYear() - 3);
+  
+  // Fetch past contests
+  const pastResponse = await axios.get(`https://clist.by/api/v4/contest/`, {
+    params: {
+      username,
+      api_key,
+      host: "codechef.com",
+      order_by: "-start",  // Newest first
+      upcoming: false,
+      start__gte: threeYearsAgo.toISOString(),
+      end__lte: today.toISOString(),
+      // limit: 100,  // Adjust as needed
+    },
+    headers: {
+      Accept: "application/json",
+    },
+  });
+  const upcomingContests = upcomingResponse.data.objects;
+  const pastContests = pastResponse.data.objects;
 
-  const contests = response.data.objects;
-
-  const transformedContests = contests.map(contest => ({
+  const transformedUpcomingContests = upcomingContests.map(contest => ({
     code: contest.id,
     name: contest.event,
     start: contest.start,
@@ -168,8 +189,19 @@ export async function codeChef() {
     href: contest.href,
   }));
 
+  const transformedPastContests = pastContests.map(contest => ({
+    code: contest.id,
+    name: contest.event,
+    start: contest.start,
+    duration: contest.duration,
+    href: contest.href,
+  }));
+
+  console.log("Transformed Upcoming Contests:", transformedUpcomingContests);
+  console.log("Transformed Past Contests:", transformedPastContests);
+
   return {
-    upcoming: transformedContests.filter(contest => new Date(contest.start) > new Date()),
-    past: transformedContests.filter(contest => new Date(contest.start) <= new Date()),
+    upcoming: transformedUpcomingContests,
+    past: transformedPastContests,
   };
 }

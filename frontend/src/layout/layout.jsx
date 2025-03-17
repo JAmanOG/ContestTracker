@@ -4,8 +4,8 @@ import Dashboard from "./dashboard";
 import Upcoming from "./upcoming";
 import PastContests from "./pastContests";
 import Bookmarks from "./bookmarks";
-import AdminPanel from "./adminPanel";
-import Settings from "./settings";
+// import AdminPanel from "./adminPanel";
+// import Settings from "./settings";
 
 // Cache expiration time (in milliseconds) - 1 hour
 const CACHE_EXPIRY_TIME = 60 * 60 * 1000;

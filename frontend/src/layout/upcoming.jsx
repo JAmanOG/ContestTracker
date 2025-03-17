@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { format } from "date-fns";
-
+import { format, isValid } from 'date-fns';
 const Upcoming = ({ contests }) => {
   const [filteredPlatform, setFilteredPlatform] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -472,7 +471,10 @@ const Upcoming = ({ contests }) => {
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                           />
                         </svg>
-                        {format(new Date(contest.startDate), "PPpp")}
+                        {contest.startDate &&
+                        isValid(new Date(contest.startDate))
+                          ? format(new Date(contest.startDate), "PPpp")
+                          : "Date not available"}{" "}
                       </div>
                       <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
                         <svg

@@ -125,7 +125,7 @@ const SiteNavigation = () => {
             </div>
 
             {/* User & Theme Controls */}
-            <div className="flex items-center space-x-4">
+            {/* <div className="flex items-center space-x-4">
               <button
                 onClick={toggleDarkMode}
                 className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-700"
@@ -161,7 +161,7 @@ const SiteNavigation = () => {
                     />
                   </svg>
                 )}
-              </button>
+              </button> */}
 
               {/* <div className="flex items-center space-x-2">
                 <img className="h-8 w-8 rounded-full" src="https://placehold.co/100x100?text=User" alt="User avatar" />

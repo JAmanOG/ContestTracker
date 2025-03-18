@@ -36,6 +36,7 @@ The application uses localStorage for two key purposes:
 - **YouTube Solution Integration**: Access video solutions for past contests
 - **Dark/Light Mode**: Toggle between visual themes
 - **Responsive Design**: Optimized for desktop and mobile devices
+- **Google Calendar Integration**: Easily add upcoming contests to your Google Calendar
 
 ## Project Structure
 

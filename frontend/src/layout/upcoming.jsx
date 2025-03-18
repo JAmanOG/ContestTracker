@@ -84,6 +84,58 @@ const Upcoming = ({ contests }) => {
     }
   };
 
+  // Add this helper function just before the return statement in your component
+  const createGoogleCalendarLink = (contest) => {
+    const eventTitle = `${getPlatformName(contest.platform)}: ${contest.name}`;
+
+    let startDate;
+    if (typeof contest.startDate === "string") {
+      startDate = new Date(contest.startDate);
+    }
+
+    if (!startDate || isNaN(startDate.getTime())) {
+      const now = new Date();
+      const { days, hours, minutes, seconds } = contest.startsIn;
+      startDate = new Date(
+        now.getTime() +
+          days * 24 * 60 * 60 * 1000 +
+          hours * 60 * 60 * 1000 +
+          minutes * 60 * 1000 +
+          seconds * 1000
+      );
+    }
+
+    // Calculate end date based on duration string
+    let endDate = new Date(startDate);
+    const durationStr = contest.duration.toLowerCase();
+
+    if (durationStr.includes("hour")) {
+      const hours = parseInt(durationStr.match(/\d+/)?.[0] || 2);
+      endDate.setHours(endDate.getHours() + hours);
+    } else if (durationStr.includes("minute")) {
+      const minutes = parseInt(durationStr.match(/\d+/)?.[0] || 60);
+      endDate.setMinutes(endDate.getMinutes() + minutes);
+    } else {
+      endDate.setHours(endDate.getHours() + 2);
+    }
+
+    const formatDate = (date) => {
+      return date.toISOString().replace(/-|:|\.\d+/g, "");
+    };
+
+    return (
+      `https://www.google.com/calendar/render?action=TEMPLATE` +
+      `&text=${encodeURIComponent(eventTitle)}` +
+      `&dates=${formatDate(startDate)}/${formatDate(endDate)}` +
+      `&details=${encodeURIComponent(
+        `${contest.name} programming contest on ${getPlatformName(
+          contest.platform
+        )}. Duration: ${contest.duration}.`
+      )}` +
+      `&location=${encodeURIComponent(contest.url)}`
+    );
+  };
+
   // Check if a contest is bookmarked
   const isBookmarked = (contest) => {
     const bookmarkId = `${contest.platform}-${contest.name.replace(
@@ -518,14 +570,33 @@ const Upcoming = ({ contests }) => {
                         </div>
                       </div>
                     </div>
-                    <a
-                      href={contest.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center py-2 px-4 rounded-md transition-colors"
-                    >
-                      View Details
-                    </a>
+                    <div className="flex space-x-2">
+                      <a
+                        href={contest.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center py-2 px-4 rounded-md transition-colors"
+                      >
+                        View Details
+                      </a>
+                      <a
+                        href={createGoogleCalendarLink(contest)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-green-600 hover:bg-green-700 text-white w-full text-center py-2 px-4 rounded-md transition-colors flex items-center justify-center"
+                        title="Add to Google Calendar"
+                      >
+                        <svg
+                          className="w-5 h-5 mr-1"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5v-5z"></path>
+                        </svg>
+                        Add to Calendar
+                      </a>
+                    </div>
+
                   </div>
                 </div>
               ))

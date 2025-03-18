@@ -2,7 +2,8 @@
 Contest Tracker is a web application that helps competitive programmers track upcoming and past coding contests from platforms like Codeforces, CodeChef, and LeetCode.
 
 ## Website: https://codecontesttracker.vercel.app
-## Video link: https://drive.google.com/file/d/1ueMRx28rf28EHm0zoo3JFcab2oOc6L7c/view?usp=sharing
+
+## Video link: [drive Link](https://drive.google.com/file/d/1Z6lUlYMBa0hUX71J_8MkPhPusOKGo2Nh/view?usp=sharing)
 
 ## Table of Contents
 

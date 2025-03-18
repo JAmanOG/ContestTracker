@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { format, isValid } from 'date-fns';
+import { format, isValid } from "date-fns";
 const Upcoming = ({ contests }) => {
   const [filteredPlatform, setFilteredPlatform] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -146,12 +146,9 @@ const Upcoming = ({ contests }) => {
           name: contest.name,
           startDate: startDate,
           duration: duration,
-          startsIn: {
-            days,
-            hours,
-            minutes,
-            seconds,
-          },
+          startsIn: calculateTimeRemaining(
+            new Date(contest.startTimeSeconds * 1000)
+          ),
           url: `https://codeforces.com/contests/${contest.id}`,
         });
       });
@@ -166,14 +163,6 @@ const Upcoming = ({ contests }) => {
         const diff = startTime - now;
 
         if (diff > 0) {
-          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-          const hours = Math.floor(
-            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-          );
-          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-          // Format duration in hours
           const durationHours = contest.duration / 3600;
           const durationMinutes = (contest.duration % 3600) / 60;
           const duration =
@@ -186,12 +175,7 @@ const Upcoming = ({ contests }) => {
             name: contest.event,
             startDate: new Date(contest.start).toLocaleDateString(),
             duration: duration,
-            startsIn: {
-              days,
-              hours,
-              minutes,
-              seconds,
-            },
+            startsIn: calculateTimeRemaining(startTime), // Use shared function here
             url: contest.href,
           });
         }
